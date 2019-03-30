@@ -1,7 +1,21 @@
 class SessionsController < ApplicationController
-  before_action :logged_in_redirect, only: [:login, :create]
+  before_action :logged_in_redirect, only: [:login, :create, :signup, :new_user]
   def login
+  end
 
+  def signup
+  end
+
+  def new_user
+    user = User.new(username: params[:session][:username], password: params[:session][:password])
+    if user.save()
+      flash[:success] = "Welcome to My Chat App #{user.username}"
+      session[:user_id] = user.id
+      redirect_to root_path
+    else
+      flash[:error] = "invalid username"
+      render 'signup'
+    end
   end
 
   def create
@@ -29,4 +43,8 @@ class SessionsController < ApplicationController
       redirect_to root_path
     end
   end
+
+  # def user_params
+  #   params.require(:user).permit(:username, :password)
+  # end
 end
